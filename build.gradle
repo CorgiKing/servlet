@@ -1,0 +1,39 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'war'
+
+sourceCompatibility = 1.8
+version = '1.0'
+jar {
+    manifest {
+        attributes 'Title': 'CKServlet',
+                   'Version': version
+    }
+}
+war {
+    manifest {
+        attributes 'Title': 'CKServlet',
+                   'Version': version
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.+'
+    compile(
+    	[group: 'commons-collections', name: 'commons-collections', version: '3.2'],
+    	[group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.0'],
+    	[group: 'commons-fileupload', name: 'commons-fileupload', version: '1.3.3']
+    	)
+}
+
+test {
+    systemProperties 'property': 'value'
+}
+
+ext{
+	
+}

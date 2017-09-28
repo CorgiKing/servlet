@@ -17,15 +17,15 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 public class UploadServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	private final String upload_dir = "upload";
+	private final String UPLOAD_DIR = "d:/upload";
 
-	private final int memory_threshold = 1024 * 1024 * 3; // 3MB
-	private final int max_file_size = 1024 * 1024 * 40; // 40MB
-	private final int max_request_size = 1024 * 1024 * 50; // 50MB
+	private final int MEMORY_THRESHOLD = 1024 * 1024 * 3; // 3MB
+	private final int MAX_FILE_SIZE = 1024 * 1024 * 40; // 40MB
+	private final int MAX_REQUEST_SIZE = 1024 * 1024 * 50; // 50MB
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+		
 		// 检查是否为多媒体上传
 		if (!ServletFileUpload.isMultipartContent(req)) {
 			System.out.println("Error: 表单必须包含 enctype=multipart/form-data");
@@ -35,7 +35,7 @@ public class UploadServlet extends HttpServlet {
 		// 配置上传参数
 		DiskFileItemFactory factory = new DiskFileItemFactory();
 		// 设置内存临界值 - 超过后将产生临时文件并存储于临时目录中
-		factory.setSizeThreshold(memory_threshold);
+		factory.setSizeThreshold(MEMORY_THRESHOLD);
 		// 临时目录
 		String tmpdir = System.getProperty("java.io.tmpdir");
 		File tmpfile = new File(tmpdir);
@@ -43,14 +43,14 @@ public class UploadServlet extends HttpServlet {
 
 		ServletFileUpload upload = new ServletFileUpload(factory);
 		// 设置最大文件上传
-		upload.setFileSizeMax(max_file_size);
+		upload.setFileSizeMax(MAX_FILE_SIZE);
 		// 设置最大请求值 (包含文件和表单数据)
-		upload.setSizeMax(max_request_size);
+		upload.setSizeMax(MAX_REQUEST_SIZE);
 		// 中文处理
 		upload.setHeaderEncoding("UTF-8");
 		// 构造临时路径来存储上传的文件
 		// 这个路径相对当前应用的目录
-		String uploadPath = req.getServletContext().getRealPath("./") + File.separator + upload_dir;
+		String uploadPath = UPLOAD_DIR;
 		// 如果目录不存在则创建
 		File uploadDir = new File(uploadPath);
 		if (!uploadDir.exists()) {
@@ -60,7 +60,7 @@ public class UploadServlet extends HttpServlet {
 		try {
 			List<FileItem> files = upload.parseRequest(req);
 			// upload.getItemIterator(req);
-			if (files == null) {
+			if (files == null || files.size() < 1) {
 				System.out.println("files: " + files);
 				return;
 			}
@@ -76,10 +76,10 @@ public class UploadServlet extends HttpServlet {
 					System.out.println(filePath);
 					// 保存文件到硬盘
 					item.write(storeFile);
-					req.setAttribute("message", "文件上传成功!");
+					resp.getWriter().append(filePath);
 				}
 			}
-
+			System.out.println("文件上传成功!");
 		} catch (FileUploadException e) {
 			e.printStackTrace();
 		} catch (Exception e) {

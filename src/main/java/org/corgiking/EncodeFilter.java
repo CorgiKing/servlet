@@ -13,13 +13,16 @@ import javax.servlet.annotation.WebFilter;
  * Servlet Filter implementation class LoginFilter
  */
 @WebFilter("/LoginFilter")
-public class LoginFilter implements Filter {
+public class EncodeFilter implements Filter {
 
 
 	public void destroy() {
 	}
 
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+		response.setContentType("text/html");
+		response.setCharacterEncoding("utf-8");
+		
 		chain.doFilter(request, response);
 	}
 
